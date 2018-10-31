@@ -9,7 +9,7 @@ fun main(args: Array<String>){
 
     //println("enter a library path");
 
-    var path: String?  ="C:\\Users\\simcha\\Downloads\\asdf"
+    var path: String?  ="C:\\Users\\simcha\\Downloads"
 
     //Scans all files in a folder
     File(path).walkTopDown().forEach{
@@ -20,8 +20,10 @@ fun main(args: Array<String>){
                 println(it);
 
                 text.forEach { inIt ->
+                    if(inIt.contains("you") == true){
+                        println(inIt)
+                    }
                     var filePath = "C:\\Users\\simcha\\Downloads\\" + intNumber++.toString() + ".asm"
-                    println(inIt)
                     File(filePath).writeText(inIt)
                 }
 
