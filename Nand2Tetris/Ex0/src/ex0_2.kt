@@ -9,7 +9,7 @@ fun main(args: Array<String>){
 
     //println("enter a library path");
 
-    var path: String?  ="C:\\Users\\simcha\\Downloads"
+    var path: String?  ="C:\\Users\\simcha\\Downloads\\asdf"
 
     //Scans all files in a folder
     File(path).walkTopDown().forEach{
