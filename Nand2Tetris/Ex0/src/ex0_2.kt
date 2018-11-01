@@ -1,38 +1,47 @@
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileSystemView
+
+
 
 
 fun main(args: Array<String>){
-//C:\Users\simcha\Downloads
+
     var intNumber:Int = 0;
 
     //println("enter a library path");
 
-    var path: String?  ="C:\\Users\\simcha\\Downloads"
+    val fr :JFileChooser  = JFileChooser()
+    val fw:FileSystemView  = fr.fileSystemView
 
-    //Scans all files in a folder
-    File(path).walkTopDown().forEach{
-        if (it.name == "hello.vm")
-            try {
+    var path: String?  = fw.defaultDirectory.path;
+    path = path + "\\"
+    
+    try {
 
-                var text : List<String> =  Files.readAllLines((it.toPath()));
+        //Scans all files in a folder
+        File(path ).walkTopDown().forEach {
+            if (it.name == "hello.vm") {
+
+                var text: List<String> = Files.readAllLines((it.toPath()));
                 println(it);
 
                 text.forEach { inIt ->
-                    if(inIt.contains("you") == true){
+                    var filePath = path + intNumber++.toString() + ".asm";
+                    if (inIt.contains("you")) {
                         println(inIt)
                     }
-                    var filePath = "C:\\Users\\simcha\\Downloads\\" + intNumber++.toString() + ".asm"
                     File(filePath).writeText(inIt)
                 }
 
-                // Files.write(Paths.get(it.path), number.toByteArray(), StandardOpenOption.APPEND)
-                //   intNumber ++;// = (intNumber + 1);
-                //   number = intNumber.toString();
-            } catch (e: IOException) {
             }
 
+
+        }
+    }
+    catch (e: IOException) {
     }
 
 }
