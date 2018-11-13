@@ -1,7 +1,9 @@
-import sun.rmi.runtime.Log
-import java.awt.SystemColor.info
 
-class VmParser {
+import java.io.File
+
+
+class VmParser (filePath:String) {
+
 
     var filePath: String =""
     var fileContent: MutableList<Line> = mutableListOf()
@@ -9,17 +11,43 @@ class VmParser {
     var numOfLines : Int = 0
     var currentLine : Line = Line("",0)
 
+
+    init {
+        this.filePath = filePath
+        var tempContent : List<String> = File(filePath).readLines()
+        tempContent.forEachIndexed { index, it ->
+            if (it.startsWith("//") || it.trim().isEmpty()){
+                //do simtihng
+            }
+            else{
+                var trimLine = it.replace(Regex("\\s")," ")
+                var line : Line = Line(trimLine,index);
+                this.fileContent.add(line)
+
+            }
+        }
+        this.currentLine = fileContent[0]
+        this.numOfLines = fileContent.count()
+
+    }
+
+
     fun getSplitedCommand() : List<String> {
-        return  this.currentLine.lineContent.split(" ")
+        return  this.currentLine.lineContent.split(Regex("\\s")) // the seperetor is any white spate
     }
 
 
     fun hasMoreCommands(): Boolean{
-        return true;//TODO
+        return (this.lineIndex < this.numOfLines)
     }
 
     fun advance()
     {
+        this.lineIndex ++;
+        if(this.hasMoreCommands()){
+            this.currentLine = fileContent[lineIndex]
+        }
+
 
     }
     fun commandType() : VmCommand {
@@ -37,7 +65,7 @@ class VmParser {
                 firstWord == "not") {
             return VmCommand.C_ARITHMETIC
         }
-        if (firstWord == "push") { return VmCommand.C_ARITHMETIC;}
+        if (firstWord == "push") { return VmCommand.C_PUSH;}
         if (firstWord == "pop") { return VmCommand.C_POP;}
 
         // If an unknown command is received
