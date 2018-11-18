@@ -27,7 +27,7 @@ class VmParser (filePath:String) {
             }
         }
         this.currentLine = fileContent[0]
-        this.numOfLines = fileContent.count()
+         this.numOfLines = fileContent.count()
 
     }
 
