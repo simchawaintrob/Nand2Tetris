@@ -26,6 +26,7 @@ class HackCodeWriter {
     }
     fun binaryAritmetic(command : String)
     {
+        
         myfile.writeText("@SP\nM=M-1\nA=M\nD=M\n@SP\nM=M-1\nA=M\\nM=M"+ command +"D\n@SP\nM=M+1\n")
     }
     fun unaryAritmetic(command : String)
