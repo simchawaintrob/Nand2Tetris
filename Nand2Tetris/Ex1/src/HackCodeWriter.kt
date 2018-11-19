@@ -1,5 +1,6 @@
 package Ex1.src
 import VmCommand
+import java.io.File
 
 class HackCodeWriter(outputFilePath:String) {
 
@@ -7,40 +8,81 @@ class HackCodeWriter(outputFilePath:String) {
     var inputFileName:String = ""
     var outputFilePath:String = ""
     init {
-        //TODO
-        //hear neet to implemant the constractor
+        this.outputFilePath = outputFilePath
+        File(this.outputFilePath).writeText(GetStackInitCommand())
+
     }
+
 
     fun writeArithmetic(command : String)
     {
         when (command) {
-            "add"-> binaryAritmetic("+")
-            "sub" -> binaryAritmetic("-")
-            "and" -> binaryAritmetic("&")
-            "or" -> binaryAritmetic("|")
-            "neg" -> unaryAritmetic("-")
-            "not" -> unaryAritmetic("!")
-            "eq" -> jumpAritmetic("JEQ",getLebel(),getLebel())
-            "gt" -> jumpAritmetic("JGQ",getLebel(),getLebel())
-            "lt" -> jumpAritmetic("JLT",getLebel(),getLebel())
+            "add"-> WriteCommand(GatBinaryAritmeticCommand("+"))
+            "sub" -> WriteCommand(GatBinaryAritmeticCommand("-"))
+            "and" -> WriteCommand(GatBinaryAritmeticCommand("&"))
+            "or" -> WriteCommand(GatBinaryAritmeticCommand("|"))
+            "neg" ->  WriteCommand(GetUnaryAritmeticCommand("-"))
+            "not" -> WriteCommand(GetUnaryAritmeticCommand("!"))
+            "eq" -> WriteCommand(GetJumpAritmeticCommand("JEQ",getLebel(),getLebel()))
+            "gt" -> WriteCommand(GetJumpAritmeticCommand("JGQ",getLebel(),getLebel()))
+            "lt" -> WriteCommand(GetJumpAritmeticCommand("JLT",getLebel(),getLebel()))
         }
     }
 
-    fun stackInit()
-    {
-        myfile.writeText("@256\nD=A\n@SP\nM=D\n")
+    fun GetStackInitCommand(): String {
+        return ( """
+            |@256
+            |D=A
+            |@SP
+            |M=D
+            |""".trimMargin("|"))
     }
-    fun binaryAritmetic(command : String)
-    {
-        myfile.writeText("@SP\nM=M-1\nA=M\nD=M\n@SP\nM=M-1\nA=M\\nM=M"+ command +"D\n@SP\nM=M+1\n")
+    fun GatBinaryAritmeticCommand(command : String):String{
+        return( """
+            @SP
+            M=M-1
+            A=M
+            D=M
+            @SP
+            M=M-1
+            A=M
+            M=M+${command}D
+            @SP
+            M=M+1
+        """.trimIndent())
     }
-    fun unaryAritmetic(command : String)
-    {
-        myfile.writeText("@SP\nM=M-1\nA=M\nM="+command+"M\n@SP\nM=M+1\n")
+    fun GetUnaryAritmeticCommand(command : String): String {
+        return ("""
+            @SP
+            M=M-1
+            A=M
+            M=${command}M
+            @SP
+            M=M+1
+            """.trimIndent())
     }
-    fun jumpAritmetic(command : String,lebel1:Int,lebel2:Int)
-    {
-        myfile.writeText("@SP\nM=M-1\nA=M\nD=M\nA=A-1\nA=M\nD=D-A\n@LABEL_"+lebel1+"\nD;"+command+"\n@SP\nA=M-1\nM=0\n@LABEL_"+lebel2+"\n1;JMP\n(LABEL_"+lebel1+")\n@SP\nA=M-1\nM=-1\n(LABEL_"+lebel2+")\n")
+    fun GetJumpAritmeticCommand(command : String,lebel1:Int,lebel2:Int):String{
+        return ("""
+            @SP
+            M=M-1
+            A=M
+            D=M
+            A=A-1
+            A=M
+            D=D-A
+            @LABEL_${lebel1}
+            D;"${command}
+            @SP
+            A=M-1
+            M=0
+            @LABEL_${lebel2}
+            1;JMP
+            (LABEL_${lebel1})
+            @SP
+            A=M-1
+            M=-1
+            (LABEL_${lebel2}")
+            """.trimIndent())
     }
 
     fun getLebel():Int
@@ -59,4 +101,9 @@ class HackCodeWriter(outputFilePath:String) {
     fun close() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+    fun WriteCommand(command: String) {
+        File(this.outputFilePath).writeText(command);
+    }
 }
+
+
