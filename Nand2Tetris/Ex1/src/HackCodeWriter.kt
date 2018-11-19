@@ -1,9 +1,15 @@
 package Ex1.src
+import VmCommand
 
-class HackCodeWriter {
+class HackCodeWriter(outputFilePath:String) {
 
     var lebelRun = 0
-
+    var inputFileName:String = ""
+    var outputFilePath:String = ""
+    init {
+        //TODO
+        //hear neet to implemant the constractor
+    }
 
     fun writeArithmetic(command : String)
     {
@@ -40,5 +46,17 @@ class HackCodeWriter {
     fun getLebel():Int
     {
         return lebelRun++
+    }
+
+    fun setFileName(fileName: String) {
+        this.inputFileName = fileName;
+    }
+
+    fun writePushPop(command: VmCommand, arg1: String, arg2: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun close() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
