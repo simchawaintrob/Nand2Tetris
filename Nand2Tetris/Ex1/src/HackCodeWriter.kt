@@ -9,7 +9,7 @@ class HackCodeWriter(outputFilePath:String) {
     var outputFilePath:String = ""
     init {
         this.outputFilePath = outputFilePath
-        File(this.outputFilePath).writeText(GetStackInitCommand())
+        File(this.outputFilePath).appendText(GetStackInitCommand())
 
     }
 
@@ -177,10 +177,11 @@ class HackCodeWriter(outputFilePath:String) {
     }
 
     fun close() {
+        return;
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
     fun WriteCommand(command: String) {
-        File(this.outputFilePath).writeText(command);
+        File(this.outputFilePath).appendText(command);
     }
 }
 

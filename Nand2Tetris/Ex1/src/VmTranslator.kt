@@ -6,22 +6,26 @@ import java.nio.file.Files
 class VMtTranslator(){
 
 
- //  var inputDirPath:String = ""
+    //  var inputDirPath:String = ""
     //var outputFilePath:String = ""
     //var MyVmParser: VmParser
-   // var CodeWriter : HackCodeWriter = HackCodeWriter("");
+    // var CodeWriter : HackCodeWriter = HackCodeWriter("");
     var ssucceed: Boolean = true;
 
 
-    fun compile (inputDirPath:String, outputFilePath:String): Boolean {
+    fun compile (inputDirPath:String, outputFilePath :String): Boolean {
 
-        var codeWriter = HackCodeWriter(outputFilePath);
 
         try {
 
             //Scans all files in a folder
             File(inputDirPath ).walkTopDown().forEach {
                 if (File(it.name).extension == "vm") {
+                    var outputFile = outputFilePath + """\""" + File(it.name).nameWithoutExtension + ".asm"
+                    if (File(outputFile).exists()){
+                        File(outputFile).delete()
+                    }
+                    var codeWriter = HackCodeWriter(outputFile);
                     codeWriter.setFileName(it.name);
                     println(inputDirPath + """\""" + it.name) //test
                     var MyVmParser = VmParser(inputDirPath + """\""" + it.name);
@@ -29,23 +33,24 @@ class VMtTranslator(){
                     var arg1:String
                     var arg2: Int = 0
                     var startMessage = """
+ |
+                    |
+                    |//    ------ START OF FILE : ${it.name} --------
+                    |
+                    |
+                    """.trimMargin("|")
 
-
-                         ------ START OF FILE : ${it.name} --------
-
-
-                    """.trimIndent()
 
                     var endMessage = """
+                    |
+                    |
+                    |//    ------ END OF FILE : ${it.name} --------
+                    |
+                    |
+                    """.trimMargin("|")
 
 
-                         ------ END OF FILE : ${it.name} --------
-
-
-                    """.trimIndent()
-
-
-                    File(codeWriter.outputFilePath).writeText(startMessage)
+                    File(codeWriter.outputFilePath).appendText(startMessage)
                     while ( MyVmParser.hasMoreCommands()){
                         command = MyVmParser.commandType()
                         arg1 = MyVmParser.arg1()
@@ -55,10 +60,10 @@ class VMtTranslator(){
 
                         if(command != VmCommand.C_UNKNOWN){
 
-                          // print line content  as comment
-                            File(codeWriter.outputFilePath).writeText("""
+                            // print line content  as comment
+                            File(codeWriter.outputFilePath).appendText("""
 
-                                // line ${MyVmParser.currentLine.sourceLineNumber}+: ${MyVmParser.currentLine.lineContent}
+                                // line ${MyVmParser.currentLine.sourceLineNumber}: ${MyVmParser.currentLine.lineContent}
 
                             """.trimIndent())
 
@@ -70,27 +75,30 @@ class VMtTranslator(){
                                 VmCommand.C_UNKNOWN -> {
                                     println("Error: Unknown command in file - ${it.name} -")
                                     ssucceed = false}
-                                }
                             }
+                        }
                         MyVmParser.advance();
 
                     }
-                }
-
-
-
-                  /*  var text: List<String> = Files.readAllLines((it.toPath()));
-                    println(it);
-
-                    text.forEach { inIt ->
-                        var filePath = path + intNumber++.toString() + ".asm";
-                        if (inIt.contains("you")) {
-                            println(inIt)
-                        }
-                        File(filePath).writeText(inIt)
-                    }*/
+                    File(codeWriter.outputFilePath).appendText(endMessage)
+                    codeWriter.close()
 
                 }
+
+
+
+                /*  var text: List<String> = Files.readAllLines((it.toPath()));
+                  println(it);
+
+                  text.forEach { inIt ->
+                      var filePath = path + intNumber++.toString() + ".asm";
+                      if (inIt.contains("you")) {
+                          println(inIt)
+                      }
+                      File(filePath).appendText(inIt)
+                  }*/
+
+            }
 
 
 
@@ -98,7 +106,6 @@ class VMtTranslator(){
         catch (e: IOException) {
         }
 
-        codeWriter.close()
 
         return ssucceed;
     }
