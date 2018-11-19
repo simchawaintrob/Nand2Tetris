@@ -94,8 +94,86 @@ class HackCodeWriter(outputFilePath:String) {
         this.inputFileName = fileName;
     }
 
-    fun writePushPop(command: VmCommand, arg1: String, arg2: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun writePushPop(command: VmCommand, segment: String, index: Int) {
+        var code : String = ""
+        when(segment)
+        {
+            "local" -> code = "LCL"
+            "argument" -> code = "ARG"
+            "this" -> code = "THIS"
+            "that" -> code = "THAT"
+            "pointer" -> code = "3"
+            "static" -> code = "5"
+            "temp" -> code = "5"
+        }
+
+        when (segment)
+        {
+            "constant" ->WriteCommand(constantComannd(index.toString()))
+            "local","argument","this","that"->WriteCommand(lattComannd(code,index.toString()))
+            "pointer","temp"->WriteCommand(ptComannd(code,index.toString()))
+            "static"->WriteCommand(staticComannd(outputFilePath,index.toString()))
+        }
+
+        if(command == VmCommand.C_PUSH)
+            push()
+        else
+            pop()
+    }
+
+    fun constantComannd(index : String):String
+    {
+        return ( """
+            |@$index
+            |D=A
+            |""".trimMargin("|"))
+    }
+
+    fun lattComannd(code : String, index : String):String
+    {
+        return ( """
+            |@$code
+            |D=A
+            |@$index
+            |D=D+M
+            |""".trimMargin("|"))
+    }
+
+    fun ptComannd(code : String, index : String):String
+    {
+        return ( """
+            |@$code
+            |D=A
+            |@$index
+            |D=D+A
+            |""".trimMargin("|"))
+    }
+
+    fun push():String
+    {
+        return ( """
+            |@SP
+            |A=M
+            |M=D
+            |D=A+1
+            |@SP
+            |M=D
+            |""".trimMargin("|"))
+
+    }
+
+    fun pop():String
+    {
+        return ( """
+            |@R13
+            |M=D
+            |@SP
+            |A=M-1
+            |D=M
+            |@R13
+            |A=M
+            |M=D
+            |""".trimMargin("|"))
     }
 
     fun close() {
