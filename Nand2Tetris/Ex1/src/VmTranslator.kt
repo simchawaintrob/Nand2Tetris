@@ -13,19 +13,15 @@ class VMtTranslator(){
     var ssucceed: Boolean = true;
 
 
-    fun compile (inputDirPath:String, outputFilePath :String): Boolean {
+    fun compile (inputDirPath:String, outputFilePath:String): Boolean {
 
+        var codeWriter = HackCodeWriter(outputFilePath);
 
         try {
 
             //Scans all files in a folder
             File(inputDirPath ).walkTopDown().forEach {
                 if (File(it.name).extension == "vm") {
-                    var outputFile = outputFilePath + """\""" + File(it.name).nameWithoutExtension + ".asm"
-                    if (File(outputFile).exists()){
-                        File(outputFile).delete()
-                    }
-                    var codeWriter = HackCodeWriter(outputFile);
                     codeWriter.setFileName(it.name);
                     println(inputDirPath + """\""" + it.name) //test
                     var MyVmParser = VmParser(inputDirPath + """\""" + it.name);
@@ -33,24 +29,23 @@ class VMtTranslator(){
                     var arg1:String
                     var arg2: Int = 0
                     var startMessage = """
- |
-                    |
-                    |//    ------ START OF FILE : ${it.name} --------
-                    |
-                    |
-                    """.trimMargin("|")
 
+
+                         ------ START OF FILE : ${it.name} --------
+
+
+                    """.trimIndent()
 
                     var endMessage = """
-                    |
-                    |
-                    |//    ------ END OF FILE : ${it.name} --------
-                    |
-                    |
-                    """.trimMargin("|")
 
 
-                    File(codeWriter.outputFilePath).appendText(startMessage)
+                         ------ END OF FILE : ${it.name} --------
+
+
+                    """.trimIndent()
+
+
+                    File(codeWriter.outputFilePath).writeText(startMessage)
                     while ( MyVmParser.hasMoreCommands()){
                         command = MyVmParser.commandType()
                         arg1 = MyVmParser.arg1()
@@ -61,9 +56,9 @@ class VMtTranslator(){
                         if(command != VmCommand.C_UNKNOWN){
 
                           // print line content  as comment
-                            File(codeWriter.outputFilePath).appendText("""
+                            File(codeWriter.outputFilePath).writeText("""
 
-                                // line ${MyVmParser.currentLine.sourceLineNumber}: ${MyVmParser.currentLine.lineContent}
+                                // line ${MyVmParser.currentLine.sourceLineNumber}+: ${MyVmParser.currentLine.lineContent}
 
                             """.trimIndent())
 
@@ -80,9 +75,6 @@ class VMtTranslator(){
                         MyVmParser.advance();
 
                     }
-                    File(codeWriter.outputFilePath).appendText(endMessage)
-                    codeWriter.close()
-
                 }
 
 
@@ -95,7 +87,7 @@ class VMtTranslator(){
                         if (inIt.contains("you")) {
                             println(inIt)
                         }
-                        File(filePath).appendText(inIt)
+                        File(filePath).writeText(inIt)
                     }*/
 
                 }
@@ -106,6 +98,7 @@ class VMtTranslator(){
         catch (e: IOException) {
         }
 
+        codeWriter.close()
 
         return ssucceed;
     }

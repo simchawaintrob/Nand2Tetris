@@ -1,15 +1,15 @@
 package Ex1.src
-        import VmCommand
-                import java.io.File
+import VmCommand
+import java.io.File
 
-        class HackCodeWriter(outputFilePath:String) {
+class HackCodeWriter(outputFilePath:String) {
 
-            var lebelRun = 0
-            var inputFileName:String = ""
-            var outputFilePath:String = ""
-            init {
+    var lebelRun = 0
+    var inputFileName:String = ""
+    var outputFilePath:String = ""
+    init {
         this.outputFilePath = outputFilePath
-        File(this.outputFilePath).appendText(GetStackInitCommand())
+        File(this.outputFilePath).writeText(GetStackInitCommand())
 
     }
 
@@ -46,7 +46,7 @@ package Ex1.src
             @SP
             M=M-1
             A=M
-            M=M${command}D
+            M=M+${command}D
             @SP
             M=M+1
         """.trimIndent())
@@ -81,7 +81,7 @@ package Ex1.src
             @SP
             A=M-1
             M=-1
-            (LABEL_${lebel2})
+            (LABEL_${lebel2}")
             """.trimIndent())
     }
 
@@ -95,16 +95,14 @@ package Ex1.src
     }
 
     fun writePushPop(command: VmCommand, arg1: String, arg2: Int) {
-        return
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun close() {
-        return;
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
     fun WriteCommand(command: String) {
-        File(this.outputFilePath).appendText(command);
+        File(this.outputFilePath).writeText(command);
     }
 }
 
