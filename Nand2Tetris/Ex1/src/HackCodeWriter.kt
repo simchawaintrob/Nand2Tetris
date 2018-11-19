@@ -112,7 +112,7 @@ class HackCodeWriter(outputFilePath:String) {
             "constant" ->WriteCommand(constantComannd(index.toString()))
             "local","argument","this","that"->WriteCommand(lattComannd(code,index.toString()))
             "pointer","temp"->WriteCommand(ptComannd(code,index.toString()))
-            "static"->WriteCommand(staticComannd(outputFilePath,index.toString()))
+            "static"->WriteCommand(staticComannd(inputFileName,index.toString()))
         }
 
         if(command == VmCommand.C_PUSH)
@@ -146,6 +146,14 @@ class HackCodeWriter(outputFilePath:String) {
             |D=A
             |@$index
             |D=D+A
+            |""".trimMargin("|"))
+    }
+
+    fun staticComannd(fileName : String, index : String):String
+    {
+        return ( """
+            |@$fileName.$index
+            |D=M
             |""".trimMargin("|"))
     }
 
