@@ -8,7 +8,7 @@ class VMtTranslator(){
 
  //  var inputDirPath:String = ""
     //var outputFilePath:String = ""
-    var MyVmParser: VmParser = VmParser("")
+    //var MyVmParser: VmParser
    // var CodeWriter : HackCodeWriter = HackCodeWriter("");
     var ssucceed: Boolean = true;
 
@@ -23,8 +23,8 @@ class VMtTranslator(){
             File(inputDirPath ).walkTopDown().forEach {
                 if (File(it.name).extension == "vm") {
                     codeWriter.setFileName(it.name);
-                    println(inputDirPath + """\\""" + it.name) //test
-                    MyVmParser = VmParser(inputDirPath + """\\""" + it.name);
+                    println(inputDirPath + """\""" + it.name) //test
+                    var MyVmParser = VmParser(inputDirPath + """\""" + it.name);
                     var command:VmCommand
                     var arg1:String
                     var arg2: Int = 0
