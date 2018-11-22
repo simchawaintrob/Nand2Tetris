@@ -24,8 +24,8 @@ class HackCodeWriter(outputFilePath:String) {
             "neg" ->  WriteCommand(GetUnaryAritmeticCommand("-"))
             "not" -> WriteCommand(GetUnaryAritmeticCommand("!"))
             "eq" -> WriteCommand(GetJumpAritmeticCommand("JEQ",getLebel(),getLebel()))
-            "gt" -> WriteCommand(GetJumpAritmeticCommand("JGT",getLebel(),getLebel()))
-            "lt" -> WriteCommand(GetJumpAritmeticCommand("JLT",getLebel(),getLebel()))
+            "gt" -> WriteCommand(GetJumpAritmeticCommand("JLT",getLebel(),getLebel()))
+            "lt" -> WriteCommand(GetJumpAritmeticCommand("JGT",getLebel(),getLebel()))
         }
     }
 
