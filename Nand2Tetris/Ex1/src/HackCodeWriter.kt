@@ -135,7 +135,8 @@ class HackCodeWriter(outputFilePath:String) {
             |@$code
             |D=A
             |@$index
-            |D=D+M
+            |A=D+A
+
             |""".trimMargin("|"))
     }
 
@@ -160,6 +161,7 @@ class HackCodeWriter(outputFilePath:String) {
     fun push():String
     {
         return ( """
+            |D=M
             |@SP
             |A=M
             |M=D
@@ -173,13 +175,14 @@ class HackCodeWriter(outputFilePath:String) {
     fun pop():String
     {
         return ( """
+            |D=A
             |@R13
             |M=D
             |@SP
-            |A=M-1
+            |M=M-1
+            |A=M
             |D=M
             |@R13
-            |A=M
             |M=D
             |""".trimMargin("|"))
     }
