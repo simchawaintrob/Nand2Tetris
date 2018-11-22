@@ -24,7 +24,7 @@ class HackCodeWriter(outputFilePath:String) {
             "neg" ->  WriteCommand(GetUnaryAritmeticCommand("-"))
             "not" -> WriteCommand(GetUnaryAritmeticCommand("!"))
             "eq" -> WriteCommand(GetJumpAritmeticCommand("JEQ",getLebel(),getLebel()))
-            "gt" -> WriteCommand(GetJumpAritmeticCommand("JGQ",getLebel(),getLebel()))
+            "gt" -> WriteCommand(GetJumpAritmeticCommand("JGT",getLebel(),getLebel()))
             "lt" -> WriteCommand(GetJumpAritmeticCommand("JLT",getLebel(),getLebel()))
         }
     }
@@ -46,7 +46,7 @@ class HackCodeWriter(outputFilePath:String) {
             @SP
             M=M-1
             A=M
-            M=M+${command}D
+            M=M${command}D
             @SP
             M=M+1
         """.trimIndent())
@@ -71,7 +71,7 @@ class HackCodeWriter(outputFilePath:String) {
             A=M
             D=D-A
             @LABEL_${lebel1}
-            D;"${command}
+            D; ${command}
             @SP
             A=M-1
             M=0
@@ -81,7 +81,7 @@ class HackCodeWriter(outputFilePath:String) {
             @SP
             A=M-1
             M=-1
-            (LABEL_${lebel2}")
+            (LABEL_${lebel2})
             """.trimIndent())
     }
 
@@ -116,9 +116,9 @@ class HackCodeWriter(outputFilePath:String) {
         }
 
         if(command == VmCommand.C_PUSH)
-            push()
+            WriteCommand(push())
         else
-            pop()
+            WriteCommand(pop())
     }
 
     fun constantComannd(index : String):String
