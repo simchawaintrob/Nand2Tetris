@@ -281,19 +281,43 @@ class HackCodeWriter(outputFilePath:String) {
     }
 
     fun writeLabel(label: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        WriteCommand("""$inputFileName.$label""")
     }
 
     fun writeGoto(label: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        WriteCommand("""@$inputFileName.$label
+                        0;JMP
+                        """.trimIndent());
     }
 
     fun writeIf(label: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        WriteCommand("""@SP
+                        M=M-1
+                        A=M
+                        D=M
+                        @$inputFileName.$label
+                        D;JNE
+                        """.trimIndent());
+
     }
 
-    fun writeFunction(functionName: String, numLocals: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun writeFunction(functionName: String, numLocals: Int)
+    {
+        WriteCommand("""($functionName)
+                        @$numLocals
+                        D=A
+                        @$functionName.End
+                        D; JEQ
+                        ($functionName.Loop)
+                        @SP
+                        A=M
+                        M=0
+                        @SP
+                        M=M+1
+                        @$functionName.Loop
+                        D=D-1; JNE
+                        ($functionName.End)
+                        """.trimIndent());
     }
 
     fun writeCall(functionName: String, numArgs: Int) {
