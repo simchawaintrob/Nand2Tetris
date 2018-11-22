@@ -279,6 +279,31 @@ class HackCodeWriter(outputFilePath:String) {
     fun WriteCommand(command: String) {
         File(this.outputFilePath).appendText(command);
     }
+
+    fun writeLabel(label: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun writeGoto(label: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun writeIf(label: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun writeFunction(functionName: String, numLocals: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun writeCall(functionName: String, numArgs: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    }
+
+    fun writeReturn() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 
 

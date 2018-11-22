@@ -54,7 +54,11 @@ class VMtTranslator(){
                     while ( MyVmParser.hasMoreCommands()){
                         command = MyVmParser.commandType()
                         arg1 = MyVmParser.arg1()
-                        if (command != VmCommand.C_ARITHMETIC) {
+                        if (command != VmCommand.C_ARITHMETIC &&
+                                command != VmCommand.C_RETURN &&
+                                command != VmCommand.C_LABEL &&
+                                command != VmCommand.C_GOTO &&
+                                command != VmCommand.C_IF	) {
                             arg2 = MyVmParser.arg2()
                         }
 
@@ -72,6 +76,12 @@ class VMtTranslator(){
                                 VmCommand.C_ARITHMETIC -> codeWriter.writeArithmetic(arg1)
                                 VmCommand.C_PUSH -> codeWriter.writePushPop(VmCommand.C_PUSH, arg1, arg2)
                                 VmCommand.C_POP -> codeWriter.writePushPop(VmCommand.C_POP, arg1, arg2)
+                                VmCommand.C_LABEL -> codeWriter.writeLabel(arg1)
+                                VmCommand.C_GOTO -> codeWriter.writeGoto(arg1)
+                                VmCommand.C_IF -> codeWriter.writeIf(arg1)
+                                VmCommand.C_FUNCTION -> codeWriter.writeFunction(arg1, arg2)
+                                VmCommand.C_CALL -> codeWriter.writeCall(arg1, arg2)
+                                VmCommand.C_RETURN -> codeWriter.writeReturn()
                                 VmCommand.C_UNKNOWN -> {
                                     println("Error: Unknown command in file - ${it.name} -")
                                     ssucceed = false}

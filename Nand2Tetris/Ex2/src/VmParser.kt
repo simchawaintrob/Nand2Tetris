@@ -67,6 +67,12 @@ class VmParser (filePath:String) {
         }
         if (firstWord == "push") { return VmCommand.C_PUSH;}
         if (firstWord == "pop") { return VmCommand.C_POP;}
+        if (firstWord == "label") { return VmCommand.C_LABEL;}
+        if (firstWord == "goto") { return VmCommand.C_GOTO;}
+        if (firstWord == "if-goto") { return VmCommand.C_IF;}
+        if (firstWord == "function") { return VmCommand.C_RETURN;}
+        if (firstWord == "call") { return VmCommand.C_CALL;}
+        if (firstWord == "return") { return VmCommand.C_RETURN;}
 
         // If an unknown command is received
         println("Error: Unknown token '" + firstWord + "' in line " + (this.currentLine.sourceLineNumber).toInt() + " in file \""+this.filePath +"\"")
