@@ -103,88 +103,173 @@ class HackCodeWriter(outputFilePath:String) {
             "this" -> code = "THIS"
             "that" -> code = "THAT"
             "pointer" -> code = "3"
-            "static" -> code = "5"
+            "static" -> code = "16"
             "temp" -> code = "5"
         }
+        if(command == VmCommand.C_PUSH) {
+            when (segment) {
 
-        when (segment)
-        {
-            "constant" ->WriteCommand(constantComannd(index.toString()))
-            "local","argument","this","that"->WriteCommand(lattComannd(code,index.toString()))
-            "pointer","temp"->WriteCommand(ptComannd(code,index.toString()))
-            "static"->WriteCommand(staticComannd(inputFileName,index.toString()))
+                "constant" -> WriteCommand(pushConstantComannd(index.toString()))
+                "local", "argument", "this", "that" -> WriteCommand(pushLattComannd(code, index.toString()))
+                "pointer"-> WriteCommand(pushPointerComannd((index+3).toString()))
+                "temp" -> WriteCommand(pushTempComannd(code,index.toString()))
+                "static" -> WriteCommand(pushStaticComannd(inputFileName, index.toString()))
+            }
         }
+        else {
+            when (segment) {
 
-        if(command == VmCommand.C_PUSH)
-            WriteCommand(push())
-        else
-            WriteCommand(pop())
+                "local", "argument", "this", "that" -> WriteCommand(popLattComannd(code, index.toString()))
+                "pointer"-> WriteCommand(popPointerComannd((index+3).toString()))
+                "temp" -> WriteCommand(popTempComannd(code, index.toString()))
+                "static" -> WriteCommand(popStaticComannd(inputFileName, index.toString()))
+            }
+        }
     }
 
-    fun constantComannd(index : String):String
+    fun pushConstantComannd(index : String):String
     {
         return ( """
-            |@$index
-            |D=A
-            |""".trimMargin("|"))
+            @$index
+            D=A
+            @SP
+            M=M+1
+            A=M-1
+            M=D
+            """.trimIndent())
     }
 
-    fun lattComannd(code : String, index : String):String
+    fun pushLattComannd(code : String, index : String):String
     {
         return ( """
-            |@$code
-            |D=A
-            |@$index
-            |A=D+A
-
-            |""".trimMargin("|"))
+            @$index
+            D=A
+            @$code
+            A=M
+            A=D+A
+            D=M
+            @SP
+            M=M+1
+            A=M-1
+            M=D
+            """.trimIndent())
     }
 
-    fun ptComannd(code : String, index : String):String
+    fun pushTempComannd(code : String, index : String):String
     {
         return ( """
-            |@$code
-            |D=A
-            |@$index
-            |D=D+A
-            |""".trimMargin("|"))
+            @$index
+            D=A
+            @$code
+            A=D+A
+            D=M
+            @SP
+            M=M+1
+            A=M-1
+            M=D
+            """.trimIndent())
     }
 
-    fun staticComannd(fileName : String, index : String):String
+    fun pushStaticComannd(fileName : String, index : String):String
     {
         return ( """
-            |@$fileName.$index
-            |D=M
-            |""".trimMargin("|"))
+            @$fileName.$index
+            D=M
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1
+            """.trimIndent())
     }
 
-    fun push():String
+
+
+    fun pushPointerComannd(index : String):String
     {
         return ( """
-            |D=M
-            |@SP
-            |A=M
-            |M=D
-            |D=A+1
-            |@SP
-            |M=D
-            |""".trimMargin("|"))
-
+            @$index
+            D=M
+            @SP
+            M=M+1
+            A=M-1
+            M=D
+            """.trimIndent())
     }
 
-    fun pop():String
+
+
+    fun popLattComannd(code : String, index : String):String
     {
         return ( """
-            |D=A
-            |@R13
-            |M=D
-            |@SP
-            |M=M-1
-            |A=M
-            |D=M
-            |@R13
-            |M=D
-            |""".trimMargin("|"))
+
+            @$code
+            D=M
+            @$index
+            D=D+A
+            @13
+            M=D
+
+            @SP
+            M=M-1
+
+            A=M
+            D=M
+
+            @13
+            A=M
+            M=D
+            """.trimIndent())
+    }
+
+    fun popTempComannd(code : String, index : String):String
+    {
+
+        return ( """
+
+            @$code
+            D=A
+            @$index
+            D=D+A
+            @13
+            M=D
+
+            @SP
+            M=M-1
+
+            A=M
+            D=M
+
+
+            @13
+            A=M
+            M=D
+
+
+            """.trimIndent())
+    }
+    fun popPointerComannd( index : String):String
+    {
+        return ( """
+            @SP
+            M=M-1
+            A=M
+            D=M
+            @$index
+            M=D
+            """.trimIndent())
+    }
+
+    fun popStaticComannd(fileName : String, index : String):String
+    {
+        return ( """
+            @SP
+            M=M-1
+            A=M
+            D=M
+            @$fileName.$index
+            M=D
+            """.trimIndent())
     }
 
     fun close() {
