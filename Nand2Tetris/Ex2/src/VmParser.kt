@@ -70,9 +70,10 @@ class VmParser (filePath:String) {
         if (firstWord == "label") { return VmCommand.C_LABEL;}
         if (firstWord == "goto") { return VmCommand.C_GOTO;}
         if (firstWord == "if-goto") { return VmCommand.C_IF;}
-        if (firstWord == "function") { return VmCommand.C_RETURN;}
+        if (firstWord == "function") { return VmCommand.C_FUNCTION;}
         if (firstWord == "call") { return VmCommand.C_CALL;}
-        if (firstWord == "return") { return VmCommand.C_RETURN;}
+        if (firstWord == "return") {
+            return VmCommand.C_RETURN;}
 
         // If an unknown command is received
         println("Error: Unknown token '" + firstWord + "' in line " + (this.currentLine.sourceLineNumber).toInt() + " in file \""+this.filePath +"\"")
@@ -92,15 +93,26 @@ class VmParser (filePath:String) {
         when(commandType()){
             VmCommand.C_RETURN -> println("Warning: arg1() not supposed to be called for C_RETURN type")
             VmCommand.C_UNKNOWN -> return ""
+            VmCommand.C_ARITHMETIC -> return  temp[0];
+            VmCommand.C_PUSH -> return temp[1];
+            VmCommand.C_POP -> return temp[1];
+            VmCommand.C_LABEL -> return temp[1];
+            VmCommand.C_GOTO -> return temp[1];
+            VmCommand.C_IF -> return temp[1];
+            VmCommand.C_FUNCTION -> return temp[1];
+            VmCommand.C_CALL -> return temp[1];
+
+
         }
+        return ""
 
 
-        if (commandType() == VmCommand.C_ARITHMETIC) {
+       /* if (commandType() == VmCommand.C_ARITHMETIC) {
            return  temp[0];
         }
         else{
             return temp[1]
-        }
+        }*/
 
 
     }

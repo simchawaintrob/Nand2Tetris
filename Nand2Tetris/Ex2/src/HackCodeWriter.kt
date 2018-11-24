@@ -1,12 +1,12 @@
-package Ex1.src
-import VmCommand
 import java.io.File
 
 class HackCodeWriter(outputFilePath:String) {
 
     var lebelRun = 0
+    var returnAddressNum = 0
     var inputFileName:String = ""
     var outputFilePath:String = ""
+
     init {
         this.outputFilePath = outputFilePath
         File(this.outputFilePath).appendText(GetStackInitCommand())
@@ -88,6 +88,11 @@ class HackCodeWriter(outputFilePath:String) {
     fun getLebel():Int
     {
         return lebelRun++
+    }
+
+    fun getReturnAddressNumber():Int
+    {
+        return returnAddressNum ++
     }
 
     fun setFileName(fileName: String) {
@@ -281,52 +286,164 @@ class HackCodeWriter(outputFilePath:String) {
     }
 
     fun writeLabel(label: String) {
-        WriteCommand("""$inputFileName.$label""")
+        WriteCommand("""($inputFileName.$label)""")
     }
 
     fun writeGoto(label: String) {
-        WriteCommand("""@$inputFileName.$label
-                        0;JMP
-                        """.trimIndent());
+        WriteCommand("""
+            @$inputFileName.$label
+            0;JMP
+            """.trimIndent());
     }
 
     fun writeIf(label: String) {
-        WriteCommand("""@SP
-                        M=M-1
-                        A=M
-                        D=M
-                        @$inputFileName.$label
-                        D;JNE
-                        """.trimIndent());
+        WriteCommand("""
+            @SP
+            M=M-1
+            A=M
+            D=M
+            @$inputFileName.$label
+            D;JNE
+            """.trimIndent());
 
     }
 
     fun writeFunction(functionName: String, numLocals: Int)
     {
-        WriteCommand("""($functionName)
-                        @$numLocals
-                        D=A
-                        @$functionName.End
-                        D; JEQ
-                        ($functionName.Loop)
-                        @SP
-                        A=M
-                        M=0
-                        @SP
-                        M=M+1
-                        @$functionName.Loop
-                        D=D-1; JNE
-                        ($functionName.End)
-                        """.trimIndent());
+        WriteCommand("""
+            ($functionName)
+            @$numLocals
+            D=A
+            @$functionName.End
+            D; JEQ
+            ($functionName.Loop)
+            @SP
+            A=M
+            M=0
+            @SP
+            M=M+1
+            @$functionName.Loop
+            D=D-1; JNE
+            ($functionName.End)
+            """.trimIndent());
     }
 
     fun writeCall(functionName: String, numArgs: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var returnNumber = getReturnAddressNumber()
+        WriteCommand("""
+        @$functionName.ReturnAddress$returnNumber
+        D=A
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        @LCL
+        D=M
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        @ARG
+        D=M
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        @THIS
+        D=M
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        @THAT
+        D=M
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        @SP
+        D=M
+        @${numArgs + 5}
+        D=D-A
+        @ARG
+        M=D
+        @SP
+        D=M
+        @LCL
+        M=D
+        @$functionName
+        0; JMP
+        ($functionName.ReturnAddress$returnNumber)
+        """.trimIndent())
 
     }
 
     fun writeReturn() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        WriteCommand("""
+            @LCL
+            A=M-1
+            A=A-1
+            A=A-1
+            A=A-1
+            A=A-1
+            D=M
+            @R14
+            M=D
+
+            @SP
+            M=M-1
+            @SP
+            A=M
+            D=M
+            @ARG
+            A=M
+            M=D
+
+            @ARG
+            D=M+1
+            @SP
+            M=D
+
+            @LCL
+            A=M-1
+            D=M
+            @THAT
+            M=D
+
+            @LCL
+            A=M-1
+            A=A-1
+            D=M
+            @THIS
+            M=D
+
+            @LCL
+            A=M-1
+            A=A-1
+            A=A-1
+            D=M
+            @ARG
+            M=D
+
+            @LCL
+            A=M-1
+            A=A-1
+            A=A-1
+            A=A-1
+            D=M
+            @LCL
+            M=D
+
+            @R14
+            A=M
+            0; JMP
+            """.trimIndent())
     }
 }
 
