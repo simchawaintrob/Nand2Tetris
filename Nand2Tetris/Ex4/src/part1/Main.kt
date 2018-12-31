@@ -1,3 +1,5 @@
+package src.part1
+
 import java.io.File
 
 fun main(args: Array<String>) {

@@ -1,3 +1,5 @@
+package src.part1
+
 enum class TokenType {
     KEYWORD,
     SYMBOL,

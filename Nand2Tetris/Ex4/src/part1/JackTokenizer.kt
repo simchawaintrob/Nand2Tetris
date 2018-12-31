@@ -1,7 +1,5 @@
+package src.part1
 
-
-import jdk.nashorn.internal.runtime.Debug
-import sun.rmi.runtime.Log
 import java.io.File
 
 
@@ -28,10 +26,10 @@ class JackTokenizer (inputJackFilePath :String) {
     init {
 
         this.inputJackFilePath = inputJackFilePath
-        allKeyWords = listOf<String>( KeyWord.CLASS, KeyWord.METHOD, KeyWord.FUNCTION, KeyWord.CONSTRUCTOR, KeyWord.INT, KeyWord.BOOLEAN,
+        allKeyWords = listOf<String>(KeyWord.CLASS, KeyWord.METHOD, KeyWord.FUNCTION, KeyWord.CONSTRUCTOR, KeyWord.INT, KeyWord.BOOLEAN,
                 KeyWord.CHAR, KeyWord.VOID, KeyWord.VAR, KeyWord.STATIC, KeyWord.FIELD, KeyWord.LET, KeyWord.DO, KeyWord.IF, KeyWord.ELSE,
                 KeyWord.WHILE, KeyWord.RETURN, KeyWord.TRUE, KeyWord.FALSE, KeyWord.NULL, KeyWord.THIS)
-        allSymbols = listOf<String>("{", "}", "(", ")", "[", "]", ".", ",", ";", "+", "-",
+        allSymbols = listOf<String>("{", "}", "(", ")", "[", "]", "", ",", ";", "+", "-",
             "*", "/", "&", "|", "<", ">", "=", "~" )
         var byteContent : List<String> = File(this.inputJackFilePath).readLines()
 
@@ -85,7 +83,7 @@ class JackTokenizer (inputJackFilePath :String) {
                 var trimContent = addSpacesBetweenSymbols(trimLine,allSymbols)
                // addSpacesBetweenSymbols(&line.lineContent, j.allSymbols)
 
-                var line : Line = Line(trimContent,index);
+                var line : Line = Line(trimContent, index);
                 this.fileContent.add(line)
             }
 
@@ -145,12 +143,16 @@ class JackTokenizer (inputJackFilePath :String) {
             }
         }
     }
-    fun getTokenType() : TokenType{
+    fun getTokenType() : TokenType {
         var notFirstTime : Boolean
-        if (isKeyWord()) {  return TokenType.KEYWORD}
-        else if(isSymbol()) { return TokenType.SYMBOL}
-        else if (isNumber()) {return TokenType.INT_CONST }
-        else if (isIdentifier()) {return TokenType.IDENTIFIER }
+        if (isKeyWord()) {  return TokenType.KEYWORD
+        }
+        else if(isSymbol()) { return TokenType.SYMBOL
+        }
+        else if (isNumber()) {return TokenType.INT_CONST
+        }
+        else if (isIdentifier()) {return TokenType.IDENTIFIER
+        }
 
         if(currentWord[0]=='"') {
             constString = ""
@@ -162,6 +164,7 @@ class JackTokenizer (inputJackFilePath :String) {
                 currentWord = currentLineWords[currentWordInLineIndex]
                 if (currentWord == ""){
                     constString += " "
+                    currentWordInLineIndex++
                     continue
                 }
 
@@ -261,14 +264,17 @@ class JackTokenizer (inputJackFilePath :String) {
     }
 
     fun addSpacesBetweenSymbols(text: String, symbols : List<String>) : String{
+        var newText: String = text
         var spacesString: String = ""
         for (symbol in symbols){
             spacesString = " " + symbol + " "
-            text.replace(symbol,spacesString)
+         //   if (text.indexOf(symbol) != -1) {
+                newText = newText.replace(symbol, spacesString)
+          //  }
 
         }
-        text.replace("\"", " \" ")
-        return  text
+        newText = newText.replace("\"", " \" ")
+        return  newText
     }
 
 
