@@ -1,4 +1,4 @@
-package src.part1
+
 
 import java.io.File
 
@@ -22,12 +22,17 @@ fun main(args: Array<String>) {
     File(sourceDir ).walkTopDown().forEach {
         if (File(it.name).extension == "jack") {
 
-            var outputFile = targetDir + """\""" + File(it.name).nameWithoutExtension + "T.xml"
-            if (File(outputFile).exists()) {
-                File(outputFile).delete()
+            var outputFile1 = targetDir + """\""" + File(it.name).nameWithoutExtension + "T.xml"
+            var outputFile2 = targetDir + """\""" + File(it.name).nameWithoutExtension + ".xml"
+            if (File(outputFile1).exists()) {
+                File(outputFile1).delete()
             }
             var tokenizer: JackTokenizer = JackTokenizer(it.path)
-            tokenizer.Writer(outputFile)
+            tokenizer.Writer(outputFile1)
+
+            var NewCompilationEngine : CompilationEngine = CompilationEngine(File(outputFile2),File(outputFile1))
+            NewCompilationEngine.parseClass()
+
 
         }
 
