@@ -29,7 +29,7 @@ class JackTokenizer (inputJackFilePath :String) {
         allKeyWords = listOf<String>(KeyWord.CLASS, KeyWord.METHOD, KeyWord.FUNCTION, KeyWord.CONSTRUCTOR, KeyWord.INT, KeyWord.BOOLEAN,
                 KeyWord.CHAR, KeyWord.VOID, KeyWord.VAR, KeyWord.STATIC, KeyWord.FIELD, KeyWord.LET, KeyWord.DO, KeyWord.IF, KeyWord.ELSE,
                 KeyWord.WHILE, KeyWord.RETURN, KeyWord.TRUE, KeyWord.FALSE, KeyWord.NULL, KeyWord.THIS)
-        allSymbols = listOf<String>("{", "}", "(", ")", "[", "]", "", ",", ";", "+", "-",
+        allSymbols = listOf<String>("{", "}", "(", ")", "[", "]", ".", ",", ";", "+", "-",
             "*", "/", "&", "|", "<", ">", "=", "~" )
         var byteContent : List<String> = File(this.inputJackFilePath).readLines()
 

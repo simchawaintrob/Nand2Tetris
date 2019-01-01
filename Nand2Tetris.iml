@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Nand2Tetris/Ex4/src/part1" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/Nand2Tetris/Ex4" isTestSource="true" />
     </content>
-    <orderEntry type="jdk" jdkName="11" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="KotlinJavaRuntime" level="project" />
   </component>
