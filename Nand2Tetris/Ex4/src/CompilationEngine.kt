@@ -1,4 +1,5 @@
 
+
 import java.io.File
 
 class CompilationEngine(outputFile: File, input:File) {
@@ -9,6 +10,8 @@ class CompilationEngine(outputFile: File, input:File) {
     var tokensFile:File
     var index:Int
     var tokens:List<String>
+    var tab:String="  "
+    var countTab:Int=0
     init {
         parsedFile=outputFile
         tokensFile=input
@@ -16,6 +19,7 @@ class CompilationEngine(outputFile: File, input:File) {
         tokens=tokensFile.readLines()
         tokens=tokens.drop(1)
         tokens=tokens.dropLast(1)
+
     }
 
     private fun getNextToken():String{
@@ -53,40 +57,44 @@ class CompilationEngine(outputFile: File, input:File) {
 
     public fun parseClass(){
 
-        parsedFile.appendText("<class>\n\t")
+        parsedFile.appendText("<class>\n")
 
-        parsedFile.appendText(getNextToken())//class
+        parsedFile.appendText("$tab${getNextToken()}")//class
 
-        parsedFile.appendText(getNextToken())//class name
+        parsedFile.appendText("$tab${getNextToken()}")//class name
 
-        parsedFile.appendText(getNextToken())//{
+        parsedFile.appendText("$tab${getNextToken()}")//{
 
         parseClassVarDec()
         parseSubDec()
 
-        parsedFile.appendText(getNextToken())
-        parsedFile.appendText("\b\b\b\b</class>\n")
+        parsedFile.appendText("$tab${getNextToken()}")
+        parsedFile.appendText("</class>\n")
     }
 
     private fun parseClassVarDec(){
         while(index<tokens.lastIndex&&checkNextToken().equals("static")||index<tokens.lastIndex&&checkNextToken().equals("field")){
-            parsedFile.appendText("<classVarDec>\n\t")
+            parsedFile.appendText("$tab<classVarDec>\n")
 
-            parsedFile.appendText(getNextToken())//static|field
+            tab+="  "
 
-            parsedFile.appendText(getNextToken())//type
+            parsedFile.appendText("$tab${getNextToken()}")//static|field
 
-            parsedFile.appendText(getNextToken())//name
+            parsedFile.appendText("$tab${getNextToken()}")//type
+
+            parsedFile.appendText("$tab${getNextToken()}")//name
             while(index<tokens.lastIndex&&checkNextToken().equals(",")){
 
-                parsedFile.appendText(getNextToken())//,
+                parsedFile.appendText("$tab${getNextToken()}")//,
 
-                parsedFile.appendText(getNextToken())//name
+                parsedFile.appendText("$tab${getNextToken()}")//name
 
             }
 
-            parsedFile.appendText(getNextToken())//;
-            parsedFile.appendText("\b\b\b\b</classVarDec>\n")
+            parsedFile.appendText("$tab${getNextToken()}")//;
+
+            tab = tab.substring(0, tab.length - 2);
+            parsedFile.appendText("$tab</classVarDec>\n")
 
 
         }
@@ -95,19 +103,21 @@ class CompilationEngine(outputFile: File, input:File) {
 
     private fun parseSubDec(){
         while(index<tokens.lastIndex&&checkNextToken().equals("constructor")||index<tokens.lastIndex&&checkNextToken().equals("function")||index<tokens.lastIndex&&checkNextToken().equals("method")){
-            parsedFile.appendText("<subroutineDec>\n\t")
+            parsedFile.appendText("$tab<subroutineDec>\n")
+            tab+="  "
 
-            parsedFile.appendText(getNextToken())//subroutine declaration
+            parsedFile.appendText("$tab${getNextToken()}")//subroutine declaration
             parseType()
 
-            parsedFile.appendText(getNextToken())//name
+            parsedFile.appendText("$tab${getNextToken()}")//name
 
-            parsedFile.appendText(getNextToken())//(
+            parsedFile.appendText("$tab${getNextToken()}")//(
             parseParameterList()
 
-            parsedFile.appendText(getNextToken())//)
+            parsedFile.appendText("$tab${getNextToken()}")//)
             parseSubBody()
-            parsedFile.appendText("\b\b\b\b</subroutineDec>\n")
+            tab = tab.substring(0, tab.length - 2);
+            parsedFile.appendText("$tab</subroutineDec>\n")
 
         }
 
@@ -115,60 +125,71 @@ class CompilationEngine(outputFile: File, input:File) {
 
     private fun parseType(){
 
-        parsedFile.appendText(getNextToken())//type
+        parsedFile.appendText("$tab${getNextToken()}")//type
 
     }
 
     private fun parseParameterList(){
-        parsedFile.appendText("<parameterList>\n\t")
+        parsedFile.appendText("$tab<parameterList>\n")
+        tab+="  "
         if(!(index<tokens.lastIndex&&checkNextToken().equals(")"))){
             parseType()
 
-            parsedFile.appendText(getNextToken())//varName
+            parsedFile.appendText("$tab${getNextToken()}")//varName
             while(index<tokens.lastIndex&&checkNextToken().equals(",")){
 
-                parsedFile.appendText(getNextToken())//,
+                parsedFile.appendText("$tab${getNextToken()}")//,
                 parseType()
 
-                parsedFile.appendText(getNextToken())//varName
+                parsedFile.appendText("$tab${getNextToken()}")//varName
             }
 
             //parsedFile.appendText(getNextToken())//)
         }
-        parsedFile.appendText("\b\b\b\b</parameterList>\n")
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</parameterList>\n")
 
     }
 
     private fun parseSubBody(){
-        parsedFile.appendText("<subroutineBody>\n\t")
-        parsedFile.appendText(getNextToken())//{
+        parsedFile.appendText("$tab<subroutineBody>\n")
+        countTab++
+        tab+="  "
+        parsedFile.appendText("$tab${getNextToken()}")//{
         while(index<tokens.lastIndex&&checkNextToken().equals("var"))
             parseVarDec()
         parseStatements()
-        parsedFile.appendText(getNextToken())//}
-        parsedFile.appendText(("\b\b\b\b</subroutineBody>\n"))
+        parsedFile.appendText("$tab${getNextToken()}")//}
+        countTab--
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText(("$tab</subroutineBody>\n"))
     }
 
     private fun parseVarDec(){
-        parsedFile.appendText("<varDec>\n\t")
-        parsedFile.appendText(getNextToken())//var
+        parsedFile.appendText("$tab<varDec>\n")
+        tab+="  "
+        parsedFile.appendText("$tab${getNextToken()}")//var
         parseType()
-        parsedFile.appendText(getNextToken())//varName
+        parsedFile.appendText("$tab${getNextToken()}")//varName
         while(index<tokens.lastIndex&&checkNextToken().equals(",")){
-            parsedFile.appendText(getNextToken())//,
-            parsedFile.appendText(getNextToken())//varName
+            parsedFile.appendText("$tab${getNextToken()}")//,
+            parsedFile.appendText("$tab${getNextToken()}")//varName
 
         }
-        parsedFile.appendText(getNextToken())//;
-        parsedFile.appendText("\b\b\b\b</varDec>\n")
+        parsedFile.appendText("$tab${getNextToken()}")//;
+
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</varDec>\n")
     }
 
     private fun parseStatements(){
-        parsedFile.appendText("<statements>\n\t")
+        parsedFile.appendText("$tab<statements>\n")
+        tab+="  "
         while(!(index<tokens.lastIndex&&checkNextToken().equals("}"))){
             parseStatement()
         }
-        parsedFile.appendText("\b\b\b\b</statements>\n")
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</statements>\n")
 
     }
 
@@ -188,140 +209,156 @@ class CompilationEngine(outputFile: File, input:File) {
     }
 
     private fun parseReturnStatement() {
-        parsedFile.appendText("<returnStatement>\n\t")
-        parsedFile.appendText(getNextToken())//return
+        parsedFile.appendText("$tab<returnStatement>\n")
+        tab+="  "
+        parsedFile.appendText("$tab${getNextToken()}")//return
         if(!(index<tokens.lastIndex&&checkNextToken().equals(";")))
             parseExpression()
-        parsedFile.appendText(getNextToken())//;
-        parsedFile.appendText("\b\b\b\b</returnStatement>\n")
+        parsedFile.appendText("$tab${getNextToken()}")//;
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</returnStatement>\n")
     }
 
     private fun parseExpression() {
-        parsedFile.appendText("<expression>\n\t")
+        parsedFile.appendText("$tab<expression>\n")
+        tab+="  "
         parseTerm()
         while(index<tokens.lastIndex&&checkNextToken() in listOfOp)
         {
-            parsedFile.appendText(getNextToken())//op
+            parsedFile.appendText("$tab${getNextToken()}")//op
             parseTerm()
         }
-        parsedFile.appendText("\b\b\b\b</expression>\n")
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</expression>\n")
     }
 
     private fun parseTerm() {
-        parsedFile.appendText("<term>\n\t")
+        parsedFile.appendText("$tab<term>\n")
+        tab+="  "
         if(index<tokens.lastIndex&&checkTypeOfNextToken()=="integerConstant")
-            parsedFile.appendText(getNextToken())//integerConstant
+            parsedFile.appendText("$tab${getNextToken()}")//integerConstant
         else if(index<tokens.lastIndex&&checkNextToken() in listOfKeyWordsConstant){
-            parsedFile.appendText(getNextToken())//keyword
+            parsedFile.appendText("$tab${getNextToken()}")//keyword
         }
         else if(index<tokens.lastIndex&&checkNextToken().equals("(")){
-            parsedFile.appendText(getNextToken())//(
+            parsedFile.appendText("$tab${getNextToken()}")//(
             parseExpression()
-            parsedFile.appendText(getNextToken())//)
+            parsedFile.appendText("$tab${getNextToken()}")//)
         }
         else if(index<tokens.lastIndex&&checkNextToken().equals("-")||index<tokens.lastIndex&&checkNextToken().equals("~")){
-            parsedFile.appendText(getNextToken())//unaryOp
+            parsedFile.appendText("$tab${getNextToken()}")//unaryOp
             parseTerm()
         }
         else if(index<tokens.lastIndex&&checkTypeOfNextToken().equals("stringConstant")){
-            parsedFile.appendText(getNextToken())//string
+            parsedFile.appendText("$tab${getNextToken()}")//string
         }
         else if(index<tokens.lastIndex&& checkNextNextToken().equals("[")){
-            parsedFile.appendText(getNextToken())//varName
-            parsedFile.appendText(getNextToken())//[
+            parsedFile.appendText("$tab${getNextToken()}")//varName
+            parsedFile.appendText("$tab${getNextToken()}")//[
             parseExpression()
-            parsedFile.appendText(getNextToken())//]
+            parsedFile.appendText("$tab${getNextToken()}")//]
         }
         else if(index<tokens.lastIndex&&checkNextNextToken().equals("(")||index<tokens.lastIndex&&checkNextNextToken().equals("."))
             parseSubCall()
         else
-            parsedFile.appendText(getNextToken())//varName
-        parsedFile.appendText("\b\b\b\b</term>\n")
+            parsedFile.appendText("$tab${getNextToken()}")//varName
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</term>\n")
 
     }
 
     private fun parseSubCall() {
         if(index<tokens.lastIndex&&checkNextNextToken().equals("(")){
-            parsedFile.appendText(getNextToken())//subroutineNme
-            parsedFile.appendText(getNextToken())//(
+            parsedFile.appendText("$tab${getNextToken()}")//subroutineNme
+            parsedFile.appendText("$tab${getNextToken()}")//(
             parseExpressionList()
-            parsedFile.appendText(getNextToken())//)
+            parsedFile.appendText("$tab${getNextToken()}")//)
         }
         else{
-            parsedFile.appendText(getNextToken())//className||varName
-            parsedFile.appendText(getNextToken())//.
-            parsedFile.appendText(getNextToken())//subroutineName
-            parsedFile.appendText(getNextToken())//(
+            parsedFile.appendText("$tab${getNextToken()}")//className||varName
+            parsedFile.appendText("$tab${getNextToken()}")//.
+            parsedFile.appendText("$tab${getNextToken()}")//subroutineName
+            parsedFile.appendText("$tab${getNextToken()}")//(
             parseExpressionList()
-            parsedFile.appendText(getNextToken())//)
+            parsedFile.appendText("$tab${getNextToken()}")//)
         }
 
     }
 
     private fun parseExpressionList() {
-        parsedFile.appendText("<expressionList>\n\t")
+        parsedFile.appendText("$tab<expressionList>\n")
+        tab+="  "
         if(!(index<tokens.lastIndex&&checkNextToken().equals(")"))){
             parseExpression()
             while ((index<tokens.lastIndex&&checkNextToken().equals(","))){
-                parsedFile.appendText(getNextToken())//,
+                parsedFile.appendText("$tab${getNextToken()}")//,
                 parseExpression()
             }
         }
-        parsedFile.appendText("\b\b\b\b</expressionList>\n")
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</expressionList>\n")
     }
 
     private fun parseDoStatement() {
-        parsedFile.appendText("<doStatement>\n\t")
-        parsedFile.appendText(getNextToken())//do
+        parsedFile.appendText("$tab<doStatement>\n")
+        tab+="  "
+        parsedFile.appendText("$tab${getNextToken()}")//do
         parseSubCall()
-        parsedFile.appendText(getNextToken())//;
-        parsedFile.appendText("\b\b\b\b</doStatement>\n")
+        parsedFile.appendText("$tab${getNextToken()}")//;
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</doStatement>\n")
     }
 
     private fun parseWhileStatement() {
-        parsedFile.appendText("<whileStatement>\n\t")
-        parsedFile.appendText(getNextToken())//while
-        parsedFile.appendText(getNextToken())//(
+        parsedFile.appendText("$tab<whileStatement>\n")
+        tab+="  "
+        parsedFile.appendText("$tab${getNextToken()}")//while
+        parsedFile.appendText("$tab${getNextToken()}")//(
         parseExpression()
-        parsedFile.appendText(getNextToken())//)
-        parsedFile.appendText(getNextToken())//{
+        parsedFile.appendText("$tab${getNextToken()}")//)
+        parsedFile.appendText("$tab${getNextToken()}")//{
         parseStatements()
-        parsedFile.appendText(getNextToken())//}
-        parsedFile.appendText("\b\b\b\b</whileStatement>\n")
+        parsedFile.appendText("$tab${getNextToken()}")//}
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</whileStatement>\n")
     }
 
     private fun parseIfStatement() {
-        parsedFile.appendText("<ifStatement>\n\t")
-        parsedFile.appendText(getNextToken())//if
-        parsedFile.appendText(getNextToken())//(
+        parsedFile.appendText("$tab<ifStatement>\n")
+        tab+="  "
+        parsedFile.appendText("$tab${getNextToken()}")//if
+        parsedFile.appendText("$tab${getNextToken()}")//(
         parseExpression()
-        parsedFile.appendText(getNextToken())//)
-        parsedFile.appendText(getNextToken())//{
+        parsedFile.appendText("$tab${getNextToken()}")//)
+        parsedFile.appendText("$tab${getNextToken()}")//{
         parseStatements()
-        parsedFile.appendText(getNextToken())//}
+        parsedFile.appendText("$tab${getNextToken()}")//}
         if(index<tokens.lastIndex&&checkNextToken().equals("else")){
-            parsedFile.appendText(getNextToken())//else
-            parsedFile.appendText(getNextToken())//{
+            parsedFile.appendText("$tab${getNextToken()}")//else
+            parsedFile.appendText("$tab${getNextToken()}")//{
             parseStatements()
-            parsedFile.appendText(getNextToken())//}
+            parsedFile.appendText("$tab${getNextToken()}")//}
         }
-        parsedFile.appendText("\b\b\b\b</ifStatement>\n")
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</ifStatement>\n")
     }
 
     private fun parseLetStatement() {
-        parsedFile.appendText("<letStatement>\n\t")
-        parsedFile.appendText(getNextToken())//let
-        parsedFile.appendText(getNextToken())//varName
+        parsedFile.appendText("$tab<letStatement>\n")
+        tab+="  "
+        parsedFile.appendText("$tab${getNextToken()}")//let
+        parsedFile.appendText("$tab${getNextToken()}")//varName
         if(index<tokens.lastIndex&&checkNextToken().equals("["))
         {
-            parsedFile.appendText(getNextToken())//[
+            parsedFile.appendText("$tab${getNextToken()}")//[
             parseExpression()
-            parsedFile.appendText(getNextToken())//]
+            parsedFile.appendText("$tab${getNextToken()}")//]
         }
-        parsedFile.appendText(getNextToken())//=
+        parsedFile.appendText("$tab${getNextToken()}")//=
         parseExpression()
-        parsedFile.appendText(getNextToken())//;
-        parsedFile.appendText("\b\b\b\b</letStatement>\n")
+        parsedFile.appendText("$tab${getNextToken()}")//;
+        tab = tab.substring(0, tab.length - 2);
+        parsedFile.appendText("$tab</letStatement>\n")
     }
 
 

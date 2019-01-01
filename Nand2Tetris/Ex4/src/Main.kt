@@ -27,11 +27,14 @@ fun main(args: Array<String>) {
             if (File(outputFile1).exists()) {
                 File(outputFile1).delete()
             }
+            if (File(outputFile2).exists()) {
+                File(outputFile2).delete()
+            }
             var tokenizer: JackTokenizer = JackTokenizer(it.path)
             tokenizer.Writer(outputFile1)
 
-           // var NewCompilationEngine : CompilationEngine = CompilationEngine(File(outputFile2),File(outputFile1))
-          // NewCompilationEngine.parseClass()
+            var NewCompilationEngine : CompilationEngine = CompilationEngine(File(outputFile2),File(outputFile1))
+            NewCompilationEngine.parseClass()
 
 
         }
