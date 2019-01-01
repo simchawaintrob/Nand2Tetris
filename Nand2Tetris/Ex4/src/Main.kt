@@ -30,8 +30,8 @@ fun main(args: Array<String>) {
             var tokenizer: JackTokenizer = JackTokenizer(it.path)
             tokenizer.Writer(outputFile1)
 
-          //  var NewCompilationEngine : CompilationEngine = CompilationEngine(File(outputFile2),File(outputFile1))
-         //   NewCompilationEngine.parseClass()
+           // var NewCompilationEngine : CompilationEngine = CompilationEngine(File(outputFile2),File(outputFile1))
+          // NewCompilationEngine.parseClass()
 
 
         }

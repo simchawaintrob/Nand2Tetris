@@ -55,7 +55,7 @@ class JackTokenizer (inputJackFilePath :String) {
             }
            // trimLine = strings.Replace(trimLine, "  ", " ", -1) //remove unnecessary spaces
            // trimLine = strings.Replace(trimLine, "\t", " ", -1) //remove tabs
-            trimLine = it.replace(Regex("\\s")," ")
+            trimLine = trimLine.replace(Regex("\\s")," ")
 
             var comment = trimLine.indexOf( "//") // search for comments
             if (comment != -1){
@@ -202,8 +202,8 @@ class JackTokenizer (inputJackFilePath :String) {
         when(currentWord){
             "<" -> return "&lt;"
             ">" -> return "&gt;"
-            "\"&\"" -> return "&amp;"
-            "\"" -> return "&quot;"
+            """&""" -> return "&amp;"
+            """\""" -> return "&quot;"
         }
         return currentWord
     }
@@ -246,8 +246,10 @@ class JackTokenizer (inputJackFilePath :String) {
     }
     private fun isIdentifier(): Boolean {
         var flag : Boolean = true
-        if ((currentWord[0] < 'A' || currentWord[0] > 'z') && (currentWord[0] != '_')) {
-            flag = false
+        if (currentWord.count() != 0) {
+            if ((currentWord[0] < 'A' || currentWord[0] > 'z') && (currentWord[0] != '_')) {
+                flag = false
+            }
         }
         for (char: Char in currentWord) {
             if (char < 'A' || char > 'z') {
