@@ -1,5 +1,4 @@
 
-
 enum class TokenType {
     KEYWORD,
     SYMBOL,
