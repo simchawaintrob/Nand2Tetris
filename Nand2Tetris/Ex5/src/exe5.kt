@@ -6,7 +6,7 @@ import java.io.File
 //isca cohen 316179175
 
 fun main(args: Array<String>) {
-    var pathDir = "C:\\Users\\Nurit\\Downloads\\Exercises\\Targil5\\project 11\\Pong"
+    var pathDir = "C:\\Users\\user\\Downloads\\תרגיל 5"
     var newFile: File
 
 
@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
                     """.trimIndent())
                     it.forEachLine {
                         AllLine=it
-
+                        // remove comments lines 30 - 46
                         if (!it.startsWith("//") && !it.startsWith("/**") && !it.startsWith(" *") && !it.endsWith("*/") && it.length > 0) {
                             if (it.contains("//")) {
                                 Tokenizing(newFile).TokenAnalizer(it.substringBefore("//").split(Regex("\\s")))
@@ -56,7 +56,7 @@ fun main(args: Array<String>) {
                     index=0
                     countOfTabs=0
 
-                    var newFile2 = File(pathDir + "\\" + fileName.toString() + ".vm")
+                    var newFile2 = File(pathDir + "\\" + fileName.toString() + ".vm") //
                     if (newFile2.exists()) {
                         newFile2.delete()
                     }

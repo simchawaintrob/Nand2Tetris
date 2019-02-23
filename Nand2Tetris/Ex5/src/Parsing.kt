@@ -50,7 +50,7 @@ open class Parsing(var parse_file: File,var tokens_file:File) {
         }
 
     }
-    fun printTabs(){
+    fun printTabs(){  // for targil 4
         for (i in 0..(countOfTabs -1))
             parse_file.appendText("  ")
     }

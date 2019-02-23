@@ -75,7 +75,8 @@ class ProgramStructure(parse_file: File, tokens_file: File) : Parsing(parse_file
             }
             var Type=valueOfToken()
             verifyAndNextToken(1)//type
-            var row=SymbolTable(valueOfToken(),Type,kind,offset)//find a new variable
+            var Name=valueOfToken()
+            var row=SymbolTable(Name,Type,kind,offset)//find a new variable
             verifyAndNextToken(1)// varName
             classSymbolTable.add(row)// add to symbol table
             while (index < tokensOfFile.lastIndex && valueOfToken()==","){
@@ -87,7 +88,7 @@ class ProgramStructure(parse_file: File, tokens_file: File) : Parsing(parse_file
                         offset= i._Index-1
                     }
                 }
-                row= SymbolTable(valueOfToken(),Type,kind,offset)
+                row= SymbolTable(valueOfToken(),Type,kind,offset) //offset ++
                 verifyAndNextToken(1)//varName
                 classSymbolTable.add(row)
             }

@@ -6,7 +6,7 @@ var ifLabelCounter=0
 class Statements(parse_file: File, tokens_file: File) : Parsing(parse_file, tokens_file) {
     fun buildStatements() {
         //parse_file.appendText("//buildStatements\n")
-        while (index <tokensOfFile.lastIndex && valueOfToken()!="}"){
+        while (index <tokensOfFile.lastIndex && valueOfToken()!="}"){ // all the places that called "satemant" appear the symbole }
             buildStatement()
         }
 
@@ -18,10 +18,7 @@ class Statements(parse_file: File, tokens_file: File) : Parsing(parse_file, toke
         if (index <tokensOfFile.lastIndex){
             when(valueOfToken()){
                 "let"->buildLetStatement()
-                "if"->{
-                    buildIfStatement()
-                }
-
+                "if"->buildIfStatement()
                 "while"->buildWhileStatement()
                 "do"->buildDoStatement()
                 "return"->buildReturnStatement()
@@ -41,7 +38,7 @@ class Statements(parse_file: File, tokens_file: File) : Parsing(parse_file, toke
                 push constant 0
                 return
 
-            """.trimIndent())//push constant 0
+            """.trimIndent())//push constant 0, void not return a value thie commend is didakti
         verifyAndNextToken(1)// ;
 
 
@@ -52,7 +49,7 @@ class Statements(parse_file: File, tokens_file: File) : Parsing(parse_file, toke
         verifyAndNextToken(1)//do
         Expressions(parse_file, tokens_file).buildSubroutineCall()
         verifyAndNextToken(1)// ;
-        parse_file.appendText("pop temp 0\n")
+        parse_file.appendText("pop temp 0\n") // set returned value from subRutine
 
 
     }
@@ -122,11 +119,11 @@ class Statements(parse_file: File, tokens_file: File) : Parsing(parse_file, toke
         var row= subroutineSymbolTable.firstOrNull { it._name==name }
         if(row==null)
             row= classSymbolTable.firstOrNull { it._name==name }
-        if (index <tokensOfFile.lastIndex && valueOfToken()=="["){
+        if (index <tokensOfFile.lastIndex && valueOfToken()=="["){ //if array
             verifyAndNextToken(1)//[
             Expressions(parse_file, tokens_file).buildExpression()
             verifyAndNextToken(1)// ]
-            when (row!!._segment) {
+            when (row!!._segment) { //!!  tolled kotlin that row in not null
                 "var"->parse_file.appendText("push local ${row._index}\n")
                 "argument"->parse_file.appendText("push argument ${row._index}\n")
                 "field"->parse_file.appendText("push this ${row._index}\n")
@@ -141,7 +138,7 @@ class Statements(parse_file: File, tokens_file: File) : Parsing(parse_file, toke
                 push temp 0
                 pop that 0
 
-            """.trimIndent())
+            """.trimIndent())// set the first expression in temp and the second expressint in pointer 1
             verifyAndNextToken(1)//;
 
         }

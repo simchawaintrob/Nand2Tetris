@@ -18,7 +18,7 @@ var AllLine=""
 class Tokenizing(var out_file: File) {
 
     fun TokenAnalizer(LineElements: List<String>){
-        if(!AllLine.contains('"')) {
+        if(!AllLine.contains('"')) { // line not contain string
             for (i in LineElements) {
                 if (i.length > 0) {
                     if (i in KeyWords)
@@ -31,7 +31,7 @@ class Tokenizing(var out_file: File) {
                     } else if (i.matches(Regex("[0-9]+")))
                         AllTokens.add(Token(TokenTypes.integerConstant, i))
                      else {
-                        tempvalue = ""
+                        tempvalue = "" // reverse lookhaed
 
                         //.add(Token(TokenTypes.IDENTIFIER, i))
                         CharsOnLine = i
@@ -41,15 +41,15 @@ class Tokenizing(var out_file: File) {
                 }
             }
         }
-        else{
+        else{ // if line is string, pass statmane befor or after string to tokenizer
             var temp= AllLine
-            if (AllLine.startsWith('"')) {
+            if (AllLine.startsWith('"')) { // if star in ""
                 var m: String = AllLine.substring(AllLine.indexOf('"'), AllLine.indexOf('"'))
                 AllLine =m
                 AllTokens.add(Token(TokenTypes.stringConstant, m))
                 TokenAnalizer(AllLine.substring(AllLine.indexOf('"')+1, AllLine.length).split(Regex("\\s")))
             }
-            else{
+            else{ // the symbol " is in the middle line, separete the token befor the string and after
                 AllLine =temp.substringBefore('"')
                 TokenAnalizer(AllLine.substringBefore('"').split(Regex("\\s")))
                 //var m=temp.sub
