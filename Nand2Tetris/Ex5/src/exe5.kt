@@ -2,11 +2,9 @@ package exe5
 
 import java.io.File
 
-//rivky kremer  208817585
-//isca cohen 316179175
 
 fun main(args: Array<String>) {
-    var pathDir = "C:\\Users\\user\\Downloads\\תרגיל 5"
+    var pathDir = "C:\\Users\\user\\Documents\\לימודים\\עקרונות\\Exercises\\TECS-Software\\Version-2.6\\nand2tetris\\tools\\Pong"
     var newFile: File
 
 

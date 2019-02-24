@@ -90,7 +90,7 @@ class Expressions(parse_file: File, tokens_file: File) : Parsing(parse_file, tok
                     if(index <tokensOfFile.lastIndex-1){
                         when(valueOfTokenByIndex(index +1)){
                             "["->{
-                                d=1
+                                d=1 // flag
                                 var n=valueOfToken()//n is tha varname
                                 verifyAndNextToken(2)//varName [
                                 buildExpression()
@@ -135,7 +135,7 @@ class Expressions(parse_file: File, tokens_file: File) : Parsing(parse_file, tok
                             }//varName
                         }
                     }
-                    if(d==0) {//if last note
+                    if(d==0) {//if last word in file
                         var n=valueOfToken()
                         verifyAndNextToken(1)
                         var row = subroutineSymbolTable.firstOrNull { it._name == n }
@@ -165,8 +165,8 @@ class Expressions(parse_file: File, tokens_file: File) : Parsing(parse_file, tok
             var n:Int
             var numOfArg=0
             var subroutineFullName:String=""
-            when(valueOfTokenByIndex(index +1)){
-                "("->{
+            when(valueOfTokenByIndex(index +1)){ // check the text token
+                "("->{ // mehtod of currnet (this) class
                     subName=valueOfToken()
                     verifyAndNextToken(2)//subroutineName (
                     parse_file.appendText("push pointer 0\n")//method of mySelf,push pointer to myself
@@ -202,7 +202,7 @@ class Expressions(parse_file: File, tokens_file: File) : Parsing(parse_file, tok
                         numOfArg++
 
                     }
-                    else if(classSymbolTable.firstOrNull{it._name==classOrVar_Name}!=null){
+                    else if(classSymbolTable.firstOrNull{it._name==classOrVar_Name}!=null){ // no enter here
                         classSymbolTable.forEach {
                             if(it._name==classOrVar_Name)
                             {
